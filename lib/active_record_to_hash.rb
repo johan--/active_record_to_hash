@@ -1,0 +1,3 @@
+module ActiveRecordToHash
+  # Your code goes here...
+end
