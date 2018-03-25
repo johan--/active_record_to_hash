@@ -93,5 +93,34 @@ describe 'to_hash' do
         )
       end
     end
+
+    context 'Multiple records' do
+      example 'No option' do
+        hash = shop.to_hash(with_areas: true)
+        expect(hash[:areas].length).to eq shop.areas.count
+        shop.areas.each.with_index do |area, index|
+          expect(hash[:areas][index]).to match(
+            id: area.id,
+            name: area.name,
+            wide_area_id: area.wide_area_id,
+            created_at: area.created_at,
+            updated_at: area.updated_at
+          )
+        end
+      end
+
+      example 'Except' do
+        hash = shop.to_hash(with_areas: {except: [:created_at]})
+        expect(hash[:areas].length).to eq shop.areas.count
+        shop.areas.each.with_index do |area, index|
+          expect(hash[:areas][index]).to match(
+            id: area.id,
+            name: area.name,
+            wide_area_id: area.wide_area_id,
+            updated_at: area.updated_at
+          )
+        end
+      end
+    end
   end
 end
