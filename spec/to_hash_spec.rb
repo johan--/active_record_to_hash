@@ -6,7 +6,7 @@ describe 'to_hash' do
   }
   context 'No relations' do
     example 'All attributes' do
-      binding.pry
+      expect(shop.to_hash).to match(shop.attributes)
     end
   end
 end
