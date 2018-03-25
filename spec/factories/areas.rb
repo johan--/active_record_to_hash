@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :area do
-    name "MyString"
-    wide_area nil
+    name Faker::Address.city
+    wide_area
   end
 end
