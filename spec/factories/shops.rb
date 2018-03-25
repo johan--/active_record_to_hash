@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :shop do
-    name Faker::StarWars.planet
+    sequence(:name) {|n| "Shop No#{n}" }
     after(:create) do |shop|
       create_list(:area, 3, shops: [shop])
     end

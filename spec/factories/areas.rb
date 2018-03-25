@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :area do
-    name Faker::Address.city
+    sequence(:name) {|n| "Area No#{n}" }
     wide_area
   end
 end
