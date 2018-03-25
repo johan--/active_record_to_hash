@@ -1,5 +1,6 @@
 module ActiveRecordToHash
   module_function
+
   def handle_with_option(record, attr_name, options)
     value = record.public_send(attr_name)
     return value.to_hash(options) if value.is_a? ::ActiveRecord::Base
@@ -22,7 +23,7 @@ module ActiveRecordToHash
           hash[key] = v
         end
 
-        options.each do |k, v|
+        options.each do |k, _v|
           next unless k.to_s.start_with?('with_')
 
           attr_name = k['with_'.length..-1].to_sym
