@@ -110,7 +110,7 @@ describe 'to_hash' do
       end
 
       example 'Except' do
-        hash = shop.to_hash(with_areas: {except: [:created_at]})
+        hash = shop.to_hash(with_areas: { except: [:created_at] })
         expect(hash[:areas].length).to eq shop.areas.count
         shop.areas.each.with_index do |area, index|
           expect(hash[:areas][index]).to match(

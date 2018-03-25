@@ -4,7 +4,7 @@ module ActiveRecordToHash
   def retrieve_child_attribute(record, attr_name, options)
     value = record.public_send(attr_name)
     return value.to_hash(options) if value.is_a? ::ActiveRecord::Base
-    return value.map{|rec| rec.to_hash(options)} if value.is_a? ::ActiveRecord::Relation
+    return value.map {|rec| rec.to_hash(options) } if value.is_a? ::ActiveRecord::Relation
     value
   end
 
