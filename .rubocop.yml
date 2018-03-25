@@ -52,15 +52,13 @@ Metrics/LineLength:
   Exclude:
     - spec/dummy/config/**/*
     - spec/dummy/Rakefile
-    - spec/lib/**/*
   
 
 Metrics/BlockLength:
   Max: 35
   Exclude:
-    - spec/lib/**/*
-    - spec/controllers/**/*
-    - dynamic_scaffold.gemspec
+    - spec/to_hash/**/*
+
 
 Metrics/MethodLength:
   Max: 20
@@ -76,10 +74,16 @@ Style/MultilineBlockChain:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 23
+  Max: 29
 
 Metrics/ModuleLength:
   Max: 120
+
+Metrics/CyclomaticComplexity:
+  Max: 9
+
+Metrics/PerceivedComplexity:
+  Max: 9
 
 Style/RegexpLiteral:
   Enabled: false
