@@ -1,8 +1,17 @@
 module ActiveRecordToHash
   module_function
 
+  def to_array(value)
+    return value if value.is_a? Array
+    return [] if value.nil?
+    [value]
+  end
+
   def retrieve_child_attribute(record, attr_name, options)
     value = record.public_send(attr_name)
+    ActiveRecordToHash.to_array(options[:scope]).each do |scope|
+      value = value.public_send(scope)
+    end
     return value.to_hash(options) if value.is_a? ::ActiveRecord::Base
     return value.map {|rec| rec.to_hash(options) } if value.is_a? ::ActiveRecord::Relation
     value
@@ -19,8 +28,8 @@ module ActiveRecordToHash
       def to_hash(options = {})
         hash = attributes.each_with_object({}) do |(k, v), memo|
           key = k.to_sym
-          next if options[:except] && options[:except].include?(key)
-          next if options[:only] && !options[:only].include?(key)
+          next if ActiveRecordToHash.to_array(options[:except]).include?(key)
+          next if options[:only] && !ActiveRecordToHash.to_array(options[:only]).include?(key)
           memo[key] = v
         end
 

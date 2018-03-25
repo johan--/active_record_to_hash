@@ -18,7 +18,7 @@ describe 'to_hash' do
     end
 
     example 'Except' do
-      expect(shop.to_hash(except: [:created_at])).to match(
+      expect(shop.to_hash(except: :created_at)).to match(
         id: shop.id,
         name: shop.name,
         updated_at: shop.updated_at
@@ -31,7 +31,7 @@ describe 'to_hash' do
     end
 
     example 'Only' do
-      expect(shop.to_hash(only: [:name])).to match(
+      expect(shop.to_hash(only: :name)).to match(
         name: shop.name
       )
 
@@ -55,7 +55,7 @@ describe 'to_hash' do
       end
 
       example 'Except' do
-        hash = area.to_hash(with_wide_area: { except: [:created_at] })
+        hash = area.to_hash(with_wide_area: { except: :created_at })
         expect(hash[:wide_area]).to match(
           id: area.wide_area.id,
           name: area.wide_area.name,
@@ -70,7 +70,7 @@ describe 'to_hash' do
       end
 
       example 'Only' do
-        hash = area.to_hash(with_wide_area: { only: [:name] })
+        hash = area.to_hash(with_wide_area: { only: :name })
         expect(hash[:wide_area]).to match(
           name: area.wide_area.name
         )
@@ -110,7 +110,7 @@ describe 'to_hash' do
       end
 
       example 'Except' do
-        hash = shop.to_hash(with_areas: { except: [:created_at] })
+        hash = shop.to_hash(with_areas: { except: :created_at })
         expect(hash[:areas].length).to eq shop.areas.count
         shop.areas.each.with_index do |area, index|
           expect(hash[:areas][index]).to match(
@@ -121,6 +121,23 @@ describe 'to_hash' do
           )
         end
       end
+    end
+
+    example 'Optinal attribute' do
+      hash = shop.to_hash(with_foobar: true)
+      expect(hash[:foobar]).to eq shop.foobar
+    end
+
+    example 'Scope option' do
+      hash = shop.to_hash(with_areas: {scope: :ordered})
+      expect(hash[:areas].length).to eq 3
+      shop.areas.ordered.each.with_index do |area, index|
+        expect(hash[:areas][index][:id]).to eq area.id
+      end
+
+      hash = shop.to_hash(with_areas: {scope: [:ordered, :limit_one]})
+      expect(hash[:areas].length).to eq 1
+      expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit_one.first.id
     end
   end
 end
