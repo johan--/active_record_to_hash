@@ -74,7 +74,7 @@ Style/MultilineBlockChain:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 29
+  Max: 31
 
 Metrics/ModuleLength:
   Max: 120

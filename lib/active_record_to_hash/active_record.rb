@@ -1,6 +1,19 @@
 module ActiveRecordToHash
   module_function
 
+  # Going up the class hierarchy, if one filter returns false, we remove it.
+  def filter(model, key, value)
+    target_class = model
+    while target_class.respond_to? :active_record_to_hash_filters
+      target_class.active_record_to_hash_filters.each do |filter|
+        return false if filter.call(key, value) == false
+      end
+      target_class = target_class.superclass
+    end
+
+    true
+  end
+
   def call_scope(relation, scope)
     if scope.is_a? Hash
       scope.each_key do |key|
@@ -40,12 +53,24 @@ module ActiveRecordToHash
       include ActiveRecordToHash::ActiveRecord::LocalInstanceMethods
     end
 
+    module ClassMethods
+      def active_record_to_hash_filters
+        @active_record_to_hash_filters || []
+      end
+
+      def add_active_record_to_hash_filter(&block)
+        @active_record_to_hash_filters ||= []
+        @active_record_to_hash_filters << block
+      end
+    end
+
     module LocalInstanceMethods
       def to_hash(options = {})
         hash = attributes.each_with_object({}) do |(k, v), memo|
           key = k.to_sym
           next if ActiveRecordToHash.to_a(options[:except]).include?(key)
           next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
+          next unless ActiveRecordToHash.filter(self.class, key, v)
           memo[key] = v
         end
 

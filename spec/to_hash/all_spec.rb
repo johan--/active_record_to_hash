@@ -157,5 +157,19 @@ describe 'to_hash' do
         expect(hash[:areas].first[:id]).to eq shop.areas.order(id: :desc).limit(1).first.id
       end
     end
+
+    context 'Filter' do
+      it 'should be able to filter for each Model' do
+        Shop.add_active_record_to_hash_filter {|key, _value| key != :created_at }
+        expect(shop.to_hash.key?(:created_at)).to be false
+        expect(area.to_hash.key?(:created_at)).to be true
+      end
+
+      it 'should be able to filter for all Model in ApplicationRecord' do
+        ApplicationRecord.add_active_record_to_hash_filter {|key, _value| key != :created_at }
+        expect(shop.to_hash.key?(:created_at)).to be false
+        expect(area.to_hash.key?(:created_at)).to be false
+      end
+    end
   end
 end
