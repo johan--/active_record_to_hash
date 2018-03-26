@@ -160,3 +160,7 @@ p shop.to_hash(no_default: true)
 
 * Run rspec test.
 * Check source code with the rubocop.
+
+
+## License
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
