@@ -171,5 +171,23 @@ describe 'to_hash' do
         expect(area.to_hash.key?(:created_at)).to be false
       end
     end
+
+    context 'Converter' do
+      it 'should be able to convert the value of each Model' do
+        Shop.add_active_record_to_hash_converter do |key, value|
+          value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at
+        end
+        expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+        expect(area.to_hash[:updated_at]).to eq area.updated_at
+      end
+
+      it 'should be able to convert the value of all Model in ApplicationRecord' do
+        ApplicationRecord.add_active_record_to_hash_converter do |key, value|
+          value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at && value.is_a?(Time)
+        end
+        expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+        expect(area.to_hash[:updated_at]).to eq area.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+      end
+    end
   end
 end

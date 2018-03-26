@@ -1,6 +1,19 @@
 module ActiveRecordToHash
   module_function
 
+  def convert(model, key, value)
+    target_class = model
+    while target_class.respond_to? :active_record_to_hash_converters
+      target_class.active_record_to_hash_converters.each do |converter|
+        ret = converter.call(key, value)
+        value = ret unless ret.nil?
+      end
+      target_class = target_class.superclass
+    end
+
+    value
+  end
+
   # Going up the class hierarchy, if one filter returns false, we remove it.
   def filter(model, key, value)
     target_class = model
@@ -62,6 +75,15 @@ module ActiveRecordToHash
         @active_record_to_hash_filters ||= []
         @active_record_to_hash_filters << block
       end
+
+      def active_record_to_hash_converters
+        @active_record_to_hash_converters || []
+      end
+
+      def add_active_record_to_hash_converter(&block)
+        @active_record_to_hash_converters ||= []
+        @active_record_to_hash_converters << block
+      end
     end
 
     module LocalInstanceMethods
@@ -71,7 +93,7 @@ module ActiveRecordToHash
           next if ActiveRecordToHash.to_a(options[:except]).include?(key)
           next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
           next unless ActiveRecordToHash.filter(self.class, key, v)
-          memo[key] = v
+          memo[key] = ActiveRecordToHash.convert(self.class, key, v)
         end
 
         options.each_key do |k|
