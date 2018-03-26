@@ -59,13 +59,12 @@ module ActiveRecordToHash
   end
 
   def handle_with_options(options)
-    options.each_key do |k|
-      next unless k.to_s.start_with?('with_')
-
-      attr_name = k[5..-1].to_sym # 5 is 'with_'.length
-      hash_key = options[k] == true || options[k][:key].nil? ? attr_name : options[k][:key]
-      options = options[k] == true ? {} : options[k]
-      yield(hash_key, attr_name, options)
+    options.each_key do |key|
+      next unless key.to_s.start_with?('with_')
+      attr_name = key[5..-1].to_sym # 5 is 'with_'.length
+      hash_key = options[key] == true || options[key][:key].nil? ? attr_name : options[key][:key]
+      child_options = options[key] == true ? {} : options[key]
+      yield(hash_key, attr_name, child_options)
     end
   end
 end

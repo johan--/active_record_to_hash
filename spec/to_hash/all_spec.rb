@@ -13,7 +13,8 @@ describe 'to_hash' do
         id: shop.id,
         name: shop.name,
         created_at: shop.created_at,
-        updated_at: shop.updated_at
+        updated_at: shop.updated_at,
+        category_id: shop.category_id
       )
     end
 
@@ -21,23 +22,25 @@ describe 'to_hash' do
       expect(shop.to_hash(except: :created_at)).to match(
         id: shop.id,
         name: shop.name,
-        updated_at: shop.updated_at
+        updated_at: shop.updated_at,
+        category_id: shop.category_id
       )
 
       expect(shop.to_hash(except: %i[updated_at created_at])).to match(
         id: shop.id,
-        name: shop.name
+        name: shop.name,
+        category_id: shop.category_id
       )
     end
 
     example 'Only' do
       expect(shop.to_hash(only: :name)).to match(
-        name: shop.name
+        name: shop.name,
       )
 
       expect(shop.to_hash(only: %i[name id])).to match(
         id: shop.id,
-        name: shop.name
+        name: shop.name,
       )
     end
   end
@@ -185,7 +188,8 @@ describe 'to_hash' do
         hash = shop.to_hash
         expect(hash).to match(
           id: shop.id,
-          name: shop.name
+          name: shop.name,
+          category_id: shop.category_id
         )
 
         hash = shop.to_hash(no_default: true)
@@ -193,7 +197,8 @@ describe 'to_hash' do
           id: shop.id,
           name: shop.name,
           created_at: shop.created_at,
-          updated_at: shop.updated_at
+          updated_at: shop.updated_at,
+          category_id: shop.category_id
         )
 
         hash = area.to_hash
@@ -214,7 +219,8 @@ describe 'to_hash' do
         hash = shop.to_hash
         expect(hash).to match(
           id: shop.id,
-          name: shop.name
+          name: shop.name,
+          category_id: shop.category_id
         )
 
         hash = shop.to_hash(no_default: true)
@@ -222,7 +228,8 @@ describe 'to_hash' do
           id: shop.id,
           name: shop.name,
           created_at: shop.created_at,
-          updated_at: shop.updated_at
+          updated_at: shop.updated_at,
+          category_id: shop.category_id
         )
 
         hash = area.to_hash
@@ -234,6 +241,23 @@ describe 'to_hash' do
 
         ApplicationRecord.active_record_to_hash_default_options = nil
       end
+    end
+
+    example 'Multiple `with` options in on record' do
+      hash = shop.to_hash(
+        only: :name,
+        with_areas: { only: :name },
+        with_category: { only: :name }
+      )
+      expect(hash).to match(
+        name: shop.name,
+        areas: [
+          { name: shop.areas[0].name },
+          { name: shop.areas[1].name },
+          { name: shop.areas[2].name },
+        ],
+        category: { name: shop.category.name }
+      )
     end
   end
 end

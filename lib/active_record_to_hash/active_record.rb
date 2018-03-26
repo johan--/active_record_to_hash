@@ -37,7 +37,7 @@ module ActiveRecordToHash
         next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
         memo[key] = ActiveRecordToHash.convert(self.class, key, v)
       end
-
+      
       ActiveRecordToHash.handle_with_options(options) do |hash_key, attr_name, child_options|
         hash[hash_key] = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, child_options)
       end

@@ -32,5 +32,9 @@ module Dummy
         request_specs: false
       g.fixture_replacement :factory_bot, dir: Rails.root.join('spec', 'factories')
     end
+
+    # http://davidvg.com/2010/04/06/missing-foreign-key-constraints-in-rails-test-database
+    # This setting is necessary for `spec/lib/dynamic_scaffold/controllers/controls/country_controller_spec.rb#Delete`
+    config.active_record.schema_format = :sql
   end
 end
