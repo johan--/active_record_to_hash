@@ -163,12 +163,14 @@ describe 'to_hash' do
         Shop.add_active_record_to_hash_filter {|key, _value| key != :created_at }
         expect(shop.to_hash.key?(:created_at)).to be false
         expect(area.to_hash.key?(:created_at)).to be true
+        Shop.clear_active_record_to_hash_filters
       end
 
       it 'should be able to filter for all Model in ApplicationRecord' do
         ApplicationRecord.add_active_record_to_hash_filter {|key, _value| key != :created_at }
         expect(shop.to_hash.key?(:created_at)).to be false
         expect(area.to_hash.key?(:created_at)).to be false
+        ApplicationRecord.clear_active_record_to_hash_filters
       end
     end
 
@@ -179,6 +181,7 @@ describe 'to_hash' do
         end
         expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
         expect(area.to_hash[:updated_at]).to eq area.updated_at
+        Shop.clear_active_record_to_hash_converters
       end
 
       it 'should be able to convert the value of all Model in ApplicationRecord' do
@@ -187,6 +190,65 @@ describe 'to_hash' do
         end
         expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
         expect(area.to_hash[:updated_at]).to eq area.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+        ApplicationRecord.clear_active_record_to_hash_converters
+      end
+    end
+
+    context 'Default options' do
+      it 'should be able to set default options for each Model' do
+        Shop.active_record_to_hash_default_options = {except: [:created_at, :updated_at]}
+
+        hash = shop.to_hash
+        expect(hash).to match(
+          id: shop.id,
+          name: shop.name,
+        )
+
+        hash = shop.to_hash(no_default: true)
+        expect(hash).to match(
+          id: shop.id,
+          name: shop.name,
+          created_at: shop.created_at,
+          updated_at: shop.updated_at
+        )
+
+        hash = area.to_hash
+        expect(hash).to match(
+          id: area.id,
+          name: area.name,
+          created_at: area.created_at,
+          updated_at: area.updated_at,
+          wide_area_id: area.wide_area_id,
+        )
+
+        Shop.active_record_to_hash_default_options = nil
+      end
+
+      it 'should be able to set default options for all Model in ApplicationRecord' do
+        ApplicationRecord.active_record_to_hash_default_options = {except: [:created_at, :updated_at]}
+
+        hash = shop.to_hash
+        expect(hash).to match(
+          id: shop.id,
+          name: shop.name,
+        )
+
+        hash = shop.to_hash(no_default: true)
+        expect(hash).to match(
+          id: shop.id,
+          name: shop.name,
+          created_at: shop.created_at,
+          updated_at: shop.updated_at
+        )
+
+        hash = area.to_hash
+        expect(hash).to match(
+          id: area.id,
+          name: area.name,
+          wide_area_id: area.wide_area_id,
+        )
+
+        ApplicationRecord.active_record_to_hash_default_options = nil
       end
     end
   end

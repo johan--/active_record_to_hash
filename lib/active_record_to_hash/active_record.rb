@@ -12,6 +12,11 @@ module ActiveRecordToHash
         @active_record_to_hash_filters << block
       end
 
+      # This is for the spec only. Don't call this.
+      def clear_active_record_to_hash_filters
+        @active_record_to_hash_filters = []
+      end
+
       def active_record_to_hash_converters
         @active_record_to_hash_converters || []
       end
@@ -20,9 +25,24 @@ module ActiveRecordToHash
         @active_record_to_hash_converters ||= []
         @active_record_to_hash_converters << block
       end
+
+      # This is for the spec only. Don't call this.
+      def clear_active_record_to_hash_converters
+        @active_record_to_hash_converters = []
+      end
+
+      def active_record_to_hash_default_options
+        @active_record_to_hash_default_options||{}
+      end
+
+      def active_record_to_hash_default_options=(options)
+        @active_record_to_hash_default_options = options
+      end
     end
 
     def to_hash(options = {})
+      options = ActiveRecordToHash.detect_options(self.class, options)
+
       hash = attributes.each_with_object({}) do |(k, v), memo|
         key = k.to_sym
         next if ActiveRecordToHash.to_a(options[:except]).include?(key)
