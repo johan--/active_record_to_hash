@@ -165,7 +165,7 @@ describe 'to_hash' do
         end
         expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
         expect(area.to_hash[:updated_at]).to eq area.updated_at
-        Shop.clear_active_record_to_hash_converters
+        Shop.send(:clear_active_record_to_hash_converters)
       end
 
       it 'should be able to convert the value of all Model in ApplicationRecord' do
@@ -174,7 +174,7 @@ describe 'to_hash' do
         end
         expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
         expect(area.to_hash[:updated_at]).to eq area.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-        ApplicationRecord.clear_active_record_to_hash_converters
+        ApplicationRecord.send(:clear_active_record_to_hash_converters)
       end
     end
 

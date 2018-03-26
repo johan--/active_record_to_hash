@@ -3,6 +3,14 @@ module ActiveRecordToHash
     extend ActiveSupport::Concern
 
     module ClassMethods
+      def active_record_to_hash_default_options
+        @active_record_to_hash_default_options || {}
+      end
+
+      def active_record_to_hash_default_options=(options)
+        @active_record_to_hash_default_options = options
+      end
+
       def active_record_to_hash_converters
         @active_record_to_hash_converters || []
       end
@@ -12,18 +20,11 @@ module ActiveRecordToHash
         @active_record_to_hash_converters << block
       end
 
-      # This is for the spec only. Don't call this.
-      def clear_active_record_to_hash_converters
-        @active_record_to_hash_converters = []
-      end
-
-      def active_record_to_hash_default_options
-        @active_record_to_hash_default_options || {}
-      end
-
-      def active_record_to_hash_default_options=(options)
-        @active_record_to_hash_default_options = options
-      end
+      private
+        # This is for the spec only. Don't call this.
+        def clear_active_record_to_hash_converters
+          @active_record_to_hash_converters = []
+        end
     end
 
     def to_hash(options = {})
