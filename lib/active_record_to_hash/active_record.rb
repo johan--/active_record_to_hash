@@ -21,6 +21,7 @@ module ActiveRecordToHash
       end
 
       private
+
         # This is for the spec only. Don't call this.
         def clear_active_record_to_hash_converters
           @active_record_to_hash_converters = []
