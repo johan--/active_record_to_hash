@@ -128,16 +128,29 @@ describe 'to_hash' do
       expect(hash[:foobar]).to eq shop.foobar
     end
 
-    example 'Scope option' do
-      hash = shop.to_hash(with_areas: {scope: :ordered})
-      expect(hash[:areas].length).to eq 3
-      shop.areas.ordered.each.with_index do |area, index|
-        expect(hash[:areas][index][:id]).to eq area.id
+    context 'Scope option' do
+      example 'One scope' do
+        hash = shop.to_hash(with_areas: {scope: :ordered})
+        expect(hash[:areas].length).to eq 3
+        shop.areas.ordered.each.with_index do |area, index|
+          expect(hash[:areas][index][:id]).to eq area.id
+        end
       end
 
-      hash = shop.to_hash(with_areas: {scope: [:ordered, :limit_one]})
-      expect(hash[:areas].length).to eq 1
-      expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit_one.first.id
+      example 'Multiple scope' do  
+        hash = shop.to_hash(with_areas: {scope: [:ordered, :limit_one]})
+        expect(hash[:areas].length).to eq 1
+        expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit_one.first.id
+      end
+
+      example 'With argument' do
+        hash = shop.to_hash(with_areas: {scope: [:ordered, {limit: 1}]})
+
+        expect(hash[:areas].length).to eq 1
+        expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit(1).first.id
+      end
     end
+
+
   end
 end
