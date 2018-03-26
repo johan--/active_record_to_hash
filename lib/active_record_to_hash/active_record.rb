@@ -10,8 +10,8 @@ module ActiveRecordToHash
     end
 
     if scope.is_a? Proc
-      ret = relation.instance_exec &scope
-      return ret||relation
+      ret = relation.instance_exec(&scope)
+      return ret || relation
     end
 
     relation.public_send(scope)
