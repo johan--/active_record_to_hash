@@ -2,10 +2,6 @@ module ActiveRecordToHash
   module ActiveRecord
     extend ActiveSupport::Concern
 
-    included do
-      include ActiveRecordToHash::ActiveRecord::LocalInstanceMethods
-    end
-
     module ClassMethods
       def active_record_to_hash_filters
         @active_record_to_hash_filters || []
@@ -26,22 +22,20 @@ module ActiveRecordToHash
       end
     end
 
-    module LocalInstanceMethods
-      def to_hash(options = {})
-        hash = attributes.each_with_object({}) do |(k, v), memo|
-          key = k.to_sym
-          next if ActiveRecordToHash.to_a(options[:except]).include?(key)
-          next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
-          next unless ActiveRecordToHash.filter(self.class, key, v)
-          memo[key] = ActiveRecordToHash.convert(self.class, key, v)
-        end
-
-        ActiveRecordToHash.handle_with_options(options) do |hash_key, attr_name, child_options|
-          hash[hash_key] = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, child_options)
-        end
-
-        hash
+    def to_hash(options = {})
+      hash = attributes.each_with_object({}) do |(k, v), memo|
+        key = k.to_sym
+        next if ActiveRecordToHash.to_a(options[:except]).include?(key)
+        next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
+        next unless ActiveRecordToHash.filter(self.class, key, v)
+        memo[key] = ActiveRecordToHash.convert(self.class, key, v)
       end
+
+      ActiveRecordToHash.handle_with_options(options) do |hash_key, attr_name, child_options|
+        hash[hash_key] = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, child_options)
+      end
+
+      hash
     end
   end
 end
