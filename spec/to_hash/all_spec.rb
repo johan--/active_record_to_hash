@@ -158,22 +158,6 @@ describe 'to_hash' do
       end
     end
 
-    context 'Filter' do
-      it 'should be able to filter for each Model' do
-        Shop.add_active_record_to_hash_filter {|key, _value| key != :created_at }
-        expect(shop.to_hash.key?(:created_at)).to be false
-        expect(area.to_hash.key?(:created_at)).to be true
-        Shop.clear_active_record_to_hash_filters
-      end
-
-      it 'should be able to filter for all Model in ApplicationRecord' do
-        ApplicationRecord.add_active_record_to_hash_filter {|key, _value| key != :created_at }
-        expect(shop.to_hash.key?(:created_at)).to be false
-        expect(area.to_hash.key?(:created_at)).to be false
-        ApplicationRecord.clear_active_record_to_hash_filters
-      end
-    end
-
     context 'Converter' do
       it 'should be able to convert the value of each Model' do
         Shop.add_active_record_to_hash_converter do |key, value|
@@ -196,12 +180,12 @@ describe 'to_hash' do
 
     context 'Default options' do
       it 'should be able to set default options for each Model' do
-        Shop.active_record_to_hash_default_options = {except: [:created_at, :updated_at]}
+        Shop.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
 
         hash = shop.to_hash
         expect(hash).to match(
           id: shop.id,
-          name: shop.name,
+          name: shop.name
         )
 
         hash = shop.to_hash(no_default: true)
@@ -218,19 +202,19 @@ describe 'to_hash' do
           name: area.name,
           created_at: area.created_at,
           updated_at: area.updated_at,
-          wide_area_id: area.wide_area_id,
+          wide_area_id: area.wide_area_id
         )
 
         Shop.active_record_to_hash_default_options = nil
       end
 
       it 'should be able to set default options for all Model in ApplicationRecord' do
-        ApplicationRecord.active_record_to_hash_default_options = {except: [:created_at, :updated_at]}
+        ApplicationRecord.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
 
         hash = shop.to_hash
         expect(hash).to match(
           id: shop.id,
-          name: shop.name,
+          name: shop.name
         )
 
         hash = shop.to_hash(no_default: true)
@@ -245,7 +229,7 @@ describe 'to_hash' do
         expect(hash).to match(
           id: area.id,
           name: area.name,
-          wide_area_id: area.wide_area_id,
+          wide_area_id: area.wide_area_id
         )
 
         ApplicationRecord.active_record_to_hash_default_options = nil

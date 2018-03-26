@@ -3,20 +3,6 @@ module ActiveRecordToHash
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def active_record_to_hash_filters
-        @active_record_to_hash_filters || []
-      end
-
-      def add_active_record_to_hash_filter(&block)
-        @active_record_to_hash_filters ||= []
-        @active_record_to_hash_filters << block
-      end
-
-      # This is for the spec only. Don't call this.
-      def clear_active_record_to_hash_filters
-        @active_record_to_hash_filters = []
-      end
-
       def active_record_to_hash_converters
         @active_record_to_hash_converters || []
       end
@@ -32,7 +18,7 @@ module ActiveRecordToHash
       end
 
       def active_record_to_hash_default_options
-        @active_record_to_hash_default_options||{}
+        @active_record_to_hash_default_options || {}
       end
 
       def active_record_to_hash_default_options=(options)
@@ -47,7 +33,6 @@ module ActiveRecordToHash
         key = k.to_sym
         next if ActiveRecordToHash.to_a(options[:except]).include?(key)
         next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
-        next unless ActiveRecordToHash.filter(self.class, key, v)
         memo[key] = ActiveRecordToHash.convert(self.class, key, v)
       end
 

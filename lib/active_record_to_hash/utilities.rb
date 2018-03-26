@@ -1,7 +1,6 @@
 module ActiveRecordToHash
   module_function
 
-
   def detect_options(model, options)
     return options if options[:no_default]
 
@@ -10,7 +9,7 @@ module ActiveRecordToHash
       options = target_class.active_record_to_hash_default_options.deep_merge(options)
       target_class = target_class.superclass
     end
-    
+
     options
   end
 
@@ -25,19 +24,6 @@ module ActiveRecordToHash
     end
 
     value
-  end
-
-  # Going up the class hierarchy, if one filter returns false, we remove it.
-  def filter(model, key, value)
-    target_class = model
-    while target_class.respond_to? :active_record_to_hash_filters
-      target_class.active_record_to_hash_filters.each do |filter|
-        return false if filter.call(key, value) == false
-      end
-      target_class = target_class.superclass
-    end
-
-    true
   end
 
   def call_scope(relation, scope)
