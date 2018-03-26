@@ -149,8 +149,13 @@ describe 'to_hash' do
         expect(hash[:areas].length).to eq 1
         expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit(1).first.id
       end
+
+      example 'With Proc' do
+        hash = shop.to_hash(with_areas: {scope: -> { order(id: :desc).limit(1) }})
+
+        expect(hash[:areas].length).to eq 1
+        expect(hash[:areas].first[:id]).to eq shop.areas.order(id: :desc).limit(1).first.id
+      end
     end
-
-
   end
 end
