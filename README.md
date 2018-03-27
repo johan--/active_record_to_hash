@@ -6,6 +6,8 @@ Add `to_hash` method to ActiveRecord of Rails. The `to_hash` method can also acq
 
 It is also possible to register converter methods in the model, and convert values.
 
+ActiveRecordToHash will be useful when creating a Web API that returns a response with JSON.
+
 ## Installation
 
 ```
@@ -83,11 +85,23 @@ p shop.to_hash(attrs_reader: to_api_hash)
 #   :name=>"Shop No1",
 # }
 
+p shop.to_hash(_create_date: -> {created_at.strftime('%Y-%m-%d')})
+# {
+#   :id=>1,
+#   :name=>"Shop No1",
+#   :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00,
+#   :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00,
+#   :create_date=>"2018-03-26"
+# }
+
 p shop.to_hash(only: :name)
 # {:name => "Shop No1"}
 
 p shop.to_hash(except: [:created_at, :updated_at])
 # {:id => 1, :name => "Shop No1"}
+
+p shop.to_hash(only: [:id], with_name: {key: :foobar})
+# {:id=>1, :foobar=>"Shop No1"}
 
 p shop.to_hash(only: [:id, :name], with_areas: true)
 # {
@@ -97,6 +111,26 @@ p shop.to_hash(only: [:id, :name], with_areas: true)
 #   {:id=>1, :name=>"Area No1", :wide_area_id=>1, :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00, :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00},
 #   {:id=>2, :name=>"Area No2", :wide_area_id=>2, :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00, :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00},
 #   {:id=>3, :name=>"Area No3", :wide_area_id=>3, :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00, :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00}
+#  ]
+# }
+
+p shop.to_hash(only: [:id, :name], with_areas: {key: :area_list})
+# {
+#  :id=>1,
+#  :name=>"Shop No1",
+#  :area_list=>[
+#   {:id=>1, :name=>"Area No1", :wide_area_id=>1, :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00, :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00},
+#   {:id=>2, :name=>"Area No2", :wide_area_id=>2, :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00, :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00},
+#   {:id=>3, :name=>"Area No3", :wide_area_id=>3, :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00, :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00}
+#  ]
+# }
+
+p shop.to_hash(only: [:id, :name], with_areas: {scope: ->{ where(id: 1) }})
+# {
+#  :id=>1,
+#  :name=>"Shop No1",
+#  :areas=>[
+#   {:id=>1, :name=>"Area No1", :wide_area_id=>1, :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00, :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00}
 #  ]
 # }
 
@@ -122,13 +156,10 @@ p shop.to_hash(
 
 ### Converter
 
-You can register converters for each model. If the function registered in the converters returns nil, the converter will be ignored.
+You can register converters for each model. This function is useful for converting values that need to be converted at all times when outputting with JSON. If the function registered in the converters returns nil, the converter will be ignored.
 
 ```rb
-class Shop < ApplicationRecord
-  has_many :shop_areas
-  has_many :areas, inverse_of: :shops, through: :shop_areas
-
+class   ApplicationRecord < ActiveRecord::Base
   add_active_record_to_hash_converter do |key, value|
     value.strftime('%Y-%m-%d %H:%M:%S') if value.is_a? Time
   end
