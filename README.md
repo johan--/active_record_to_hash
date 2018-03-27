@@ -22,7 +22,6 @@ gem 'active_record_to_hash', '~>0.1'
 | Key | Description | Type |
 |:--|:--|:--|
 | attrs_reader | Specify a method to get the hash of the value and column name. If you omitt it, `attributes` is used. | Symbol |
-| _[key_name] | Specify a block as a value. The execution result is added to the hash with the specified key_name. The block executes in the scope of record. | Proc |
 | key | Change the key of the hash. | Symbol |
 | except | Remove from the hash. | Symbol Array |
 | only | Retrieve only the specified key. | Symbol Array |
@@ -83,15 +82,6 @@ p shop.to_hash(attrs_reader: to_api_hash)
 # {
 #   :id=>1,
 #   :name=>"Shop No1",
-# }
-
-p shop.to_hash(_create_date: -> {created_at.strftime('%Y-%m-%d')})
-# {
-#   :id=>1,
-#   :name=>"Shop No1",
-#   :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00,
-#   :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00,
-#   :create_date=>"2018-03-26"
 # }
 
 p shop.to_hash(only: :name)
