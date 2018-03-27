@@ -17,17 +17,11 @@ gem 'active_record_to_hash', '~>0.1'
 
 ## Usage
 
-```rb
-record.to_hash([attrs_reader], options = {})
-```
-
-The first argument is the name of the method that gets the keys and values of the hash. If you omit it, `attributes` is used. This will be cascaded to all related records to be obtained with the `with_[attribute_name]` option. If you want to change only some models, please use `attrs_reader` option.
-
 ### Options
 
 | Key | Description | Type |
 |:--|:--|:--|
-| attrs_reader | Specify a method to get the hash of the value and column name. Default is `attributes`. | Symbol |
+| attrs_reader | Specify a method to get the hash of the value and column name. If you omitt it, `attributes` is used. | Symbol |
 | key | Change the key of the hash. | Symbol |
 | except | Remove from the hash. | Symbol Array |
 | only | Retrieve only the specified key. | Symbol Array |

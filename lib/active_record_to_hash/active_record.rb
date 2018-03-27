@@ -20,9 +20,8 @@ module ActiveRecordToHash
         end
     end
 
-    def to_hash(*args)
-      options = args.extract_options!
-      attrs_reader = options[:attrs_reader] || args[0] || :attributes
+    def to_hash(options = {})
+      attrs_reader = options[:attrs_reader] || :attributes
       hash = public_send(attrs_reader).each_with_object({}) do |(k, v), memo|
         key = k.to_sym
         next if ActiveRecordToHash.to_a(options[:except]).include?(key)
@@ -31,7 +30,7 @@ module ActiveRecordToHash
       end
 
       ActiveRecordToHash.handle_with_options(options) do |hash_key, attr_name, child_options|
-        hash[hash_key] = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, [args[0], child_options])
+        hash[hash_key] = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, child_options)
       end
 
       hash
