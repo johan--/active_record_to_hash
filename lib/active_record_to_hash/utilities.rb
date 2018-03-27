@@ -60,4 +60,13 @@ module ActiveRecordToHash
       yield(hash_key, attr_name, child_options)
     end
   end
+
+  def handle_under_bar_options(options, record)
+    options.each_key do |key|
+      next unless key.to_s.start_with?('_')
+      hash_key = key[1..-1].to_sym # 1 is '_'.length
+      value = record.instance_exec(&options[key])
+      yield(hash_key, value)
+    end
+  end
 end

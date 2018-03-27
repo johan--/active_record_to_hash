@@ -42,6 +42,10 @@ module ActiveRecordToHash
         hash[hash_key] = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, child_options)
       end
 
+      ActiveRecordToHash.handle_under_bar_options(options, self) do |hash_key, value|
+        hash[hash_key] = value
+      end
+
       hash
     end
   end

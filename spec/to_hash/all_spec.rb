@@ -237,6 +237,17 @@ describe 'to_hash' do
     end
   end
 
+  context 'Under bar with proc' do
+    it 'should be able to add the execution result of the block with the specified key.' do
+      hash = shop.to_hash({
+        _foobar: -> { foobar },
+        __name: -> { name }
+      })
+      expect(hash[:foobar]).to eq shop.foobar
+      expect(hash[:_name]).to eq shop.name
+    end
+  end
+
   example 'Multiple `with` options in on record' do
     hash = shop.to_hash(
       only: :name,

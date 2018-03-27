@@ -17,13 +17,15 @@ gem 'active_record_to_hash', '~>0.1'
 
 ### Options
 
-| Key | Description |
-|:--|:--|
-| key | Change the key of hash. Symbol. |
-| except | Remove from hash. Array or Symbol. |
-| only | Retrieve only the specified key. Array or Symbol. |
-| with_[attribute_name] | The attribute name is passed to public_send. If the return value is ActiveRecord or ActiveRecord_Relation, call `to_hash`. The Hash specified for this value is passed to that `to_hash`. Boolean or Hash |
-| no_default | Ignore the default_option described after. Boolean |
+| Key | Description | Type |
+|:--|:--|:--|
+| _[key_name] | Specify a block as a value. The execution result is added to the hash with the specified key_name. The block executes in the scope of record. | Proc |
+| key | Change the key of the hash. | Symbol |
+| except | Remove from the hash. | Symbol Array |
+| only | Retrieve only the specified key. | Symbol Array |
+| with_[attribute_name] | The attribute name is passed to public_send. If the return value is ActiveRecord or ActiveRecord_Relation, call `to_hash`. The Hash specified for this value is passed to that `to_hash`. | Boolean Hash |
+| no_default | Ignore the default_option described after. | Boolean |
+| scope | You can specify scope when acquiring related records. | Symbol Array Proc |
 
 
 ### Examples
