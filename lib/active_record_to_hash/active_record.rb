@@ -3,14 +3,6 @@ module ActiveRecordToHash
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def active_record_to_hash_default_options
-        @active_record_to_hash_default_options || {}
-      end
-
-      def active_record_to_hash_default_options=(options)
-        @active_record_to_hash_default_options = options
-      end
-
       def active_record_to_hash_converters
         @active_record_to_hash_converters || []
       end
@@ -29,7 +21,6 @@ module ActiveRecordToHash
     end
 
     def to_hash(options = {})
-      options = ActiveRecordToHash.detect_options(self.class, options)
 
       hash = attributes.each_with_object({}) do |(k, v), memo|
         key = k.to_sym

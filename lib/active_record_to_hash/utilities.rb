@@ -1,18 +1,6 @@
 module ActiveRecordToHash
   module_function
 
-  def detect_options(model, options)
-    return options if options[:no_default]
-
-    target_class = model
-    while target_class.respond_to? :active_record_to_hash_default_options
-      options = target_class.active_record_to_hash_default_options.deep_merge(options)
-      target_class = target_class.superclass
-    end
-
-    options
-  end
-
   def convert(model, key, value)
     target_class = model
     while target_class.respond_to? :active_record_to_hash_converters

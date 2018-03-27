@@ -175,68 +175,6 @@ describe 'to_hash' do
     end
   end
 
-  context 'Default options' do
-    it 'should be able to set default options for each Model' do
-      Shop.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
-
-      hash = shop.to_hash
-      expect(hash).to match(
-        id: shop.id,
-        name: shop.name,
-        category_id: shop.category_id
-      )
-
-      hash = shop.to_hash(no_default: true)
-      expect(hash).to match(
-        id: shop.id,
-        name: shop.name,
-        created_at: shop.created_at,
-        updated_at: shop.updated_at,
-        category_id: shop.category_id
-      )
-
-      hash = area.to_hash
-      expect(hash).to match(
-        id: area.id,
-        name: area.name,
-        created_at: area.created_at,
-        updated_at: area.updated_at,
-        wide_area_id: area.wide_area_id
-      )
-
-      Shop.active_record_to_hash_default_options = nil
-    end
-
-    it 'should be able to set default options for all Model in ApplicationRecord' do
-      ApplicationRecord.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
-
-      hash = shop.to_hash
-      expect(hash).to match(
-        id: shop.id,
-        name: shop.name,
-        category_id: shop.category_id
-      )
-
-      hash = shop.to_hash(no_default: true)
-      expect(hash).to match(
-        id: shop.id,
-        name: shop.name,
-        created_at: shop.created_at,
-        updated_at: shop.updated_at,
-        category_id: shop.category_id
-      )
-
-      hash = area.to_hash
-      expect(hash).to match(
-        id: area.id,
-        name: area.name,
-        wide_area_id: area.wide_area_id
-      )
-
-      ApplicationRecord.active_record_to_hash_default_options = nil
-    end
-  end
-
   context 'Under bar with proc' do
     it 'should be able to add the execution result of the block with the specified key.' do
       hash = shop.to_hash(

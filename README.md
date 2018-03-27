@@ -24,7 +24,6 @@ gem 'active_record_to_hash', '~>0.1'
 | except | Remove from the hash. | Symbol Array |
 | only | Retrieve only the specified key. | Symbol Array |
 | with_[attribute_name] | The attribute name is passed to public_send. If the return value is ActiveRecord or ActiveRecord_Relation, call `to_hash`. The Hash specified for this value is passed to that `to_hash`. | Boolean Hash |
-| no_default | Ignore the default_option described after. | Boolean |
 | scope | You can specify scope when acquiring related records. | Symbol Array Proc |
 
 
@@ -132,31 +131,6 @@ p shop.to_hash
 # }
 ```
 
-### Default options
-
-You can register default options for each model. The default option will be `deep_merge` with options passed on call. Ignored if you specify `no_default: true` option on call.
-
-```rb
-class Shop < ApplicationRecord
-  has_many :shop_areas
-  has_many :areas, inverse_of: :shops, through: :shop_areas
-
-  self.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
-end
-```
-
-```rb
-p shop.to_hash
-# {:id=>1, :name=>"Shop No1"}
-
-p shop.to_hash(no_default: true)
-# {
-#   :id=>1,
-#   :name=>"Shop No1",
-#   :created_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00,
-#   :updated_at=>Mon, 26 Mar 2018 07:53:26 UTC +00:00
-# }
-```
 
 ## Contributing
 
