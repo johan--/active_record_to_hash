@@ -35,12 +35,12 @@ describe 'to_hash' do
 
     example 'Only' do
       expect(shop.to_hash(only: :name)).to match(
-        name: shop.name,
+        name: shop.name
       )
 
       expect(shop.to_hash(only: %i[name id])).to match(
         id: shop.id,
-        name: shop.name,
+        name: shop.name
       )
     end
   end
@@ -239,10 +239,10 @@ describe 'to_hash' do
 
   context 'Under bar with proc' do
     it 'should be able to add the execution result of the block with the specified key.' do
-      hash = shop.to_hash({
+      hash = shop.to_hash(
         _foobar: -> { foobar },
         __name: -> { name }
-      })
+      )
       expect(hash[:foobar]).to eq shop.foobar
       expect(hash[:_name]).to eq shop.name
     end
@@ -259,7 +259,7 @@ describe 'to_hash' do
       areas: [
         { name: shop.areas[0].name },
         { name: shop.areas[1].name },
-        { name: shop.areas[2].name },
+        { name: shop.areas[2].name }
       ],
       category: { name: shop.category.name }
     )
