@@ -125,139 +125,132 @@ describe 'to_hash' do
         end
       end
     end
+  end
 
-    example 'Optinal attribute' do
-      hash = shop.to_hash(with_foobar: true)
-      expect(hash[:foobar]).to eq shop.foobar
-    end
+  example 'Optinal attribute' do
+    hash = shop.to_hash(with_foobar: true)
+    expect(hash[:foobar]).to eq shop.foobar
+  end
 
-    context 'Scope option' do
-      example 'One scope' do
-        hash = shop.to_hash(with_areas: { scope: :ordered })
-        expect(hash[:areas].length).to eq 3
-        shop.areas.ordered.each.with_index do |area, index|
-          expect(hash[:areas][index][:id]).to eq area.id
-        end
-      end
-
-      example 'Multiple scope' do
-        hash = shop.to_hash(with_areas: { scope: %i[ordered limit_one] })
-        expect(hash[:areas].length).to eq 1
-        expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit_one.first.id
-      end
-
-      example 'With argument' do
-        hash = shop.to_hash(with_areas: { scope: [:ordered, { limit: 1 }] })
-
-        expect(hash[:areas].length).to eq 1
-        expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit(1).first.id
-      end
-
-      example 'With Proc' do
-        hash = shop.to_hash(with_areas: { scope: -> { order(id: :desc).limit(1) } })
-
-        expect(hash[:areas].length).to eq 1
-        expect(hash[:areas].first[:id]).to eq shop.areas.order(id: :desc).limit(1).first.id
+  context 'Scope option' do
+    example 'One scope' do
+      hash = shop.to_hash(with_areas: { scope: :ordered })
+      expect(hash[:areas].length).to eq 3
+      shop.areas.ordered.each.with_index do |area, index|
+        expect(hash[:areas][index][:id]).to eq area.id
       end
     end
 
-    context 'Converter' do
-      it 'should be able to convert the value of each Model' do
-        Shop.add_active_record_to_hash_converter do |key, value|
-          value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at
-        end
-        expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-        expect(area.to_hash[:updated_at]).to eq area.updated_at
-        Shop.send(:clear_active_record_to_hash_converters)
-      end
-
-      it 'should be able to convert the value of all Model in ApplicationRecord' do
-        ApplicationRecord.add_active_record_to_hash_converter do |key, value|
-          value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at && value.is_a?(Time)
-        end
-        expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-        expect(area.to_hash[:updated_at]).to eq area.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-        ApplicationRecord.send(:clear_active_record_to_hash_converters)
-      end
+    example 'Multiple scope' do
+      hash = shop.to_hash(with_areas: { scope: %i[ordered limit_one] })
+      expect(hash[:areas].length).to eq 1
+      expect(hash[:areas].first[:id]).to eq shop.areas.ordered.limit_one.first.id
     end
 
-    context 'Default options' do
-      it 'should be able to set default options for each Model' do
-        Shop.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
+    example 'With Proc' do
+      hash = shop.to_hash(with_areas: { scope: -> { order(id: :desc).limit(1) } })
 
-        hash = shop.to_hash
-        expect(hash).to match(
-          id: shop.id,
-          name: shop.name,
-          category_id: shop.category_id
-        )
+      expect(hash[:areas].length).to eq 1
+      expect(hash[:areas].first[:id]).to eq shop.areas.order(id: :desc).limit(1).first.id
+    end
+  end
 
-        hash = shop.to_hash(no_default: true)
-        expect(hash).to match(
-          id: shop.id,
-          name: shop.name,
-          created_at: shop.created_at,
-          updated_at: shop.updated_at,
-          category_id: shop.category_id
-        )
-
-        hash = area.to_hash
-        expect(hash).to match(
-          id: area.id,
-          name: area.name,
-          created_at: area.created_at,
-          updated_at: area.updated_at,
-          wide_area_id: area.wide_area_id
-        )
-
-        Shop.active_record_to_hash_default_options = nil
+  context 'Converter' do
+    it 'should be able to convert the value of each Model' do
+      Shop.add_active_record_to_hash_converter do |key, value|
+        value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at
       end
-
-      it 'should be able to set default options for all Model in ApplicationRecord' do
-        ApplicationRecord.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
-
-        hash = shop.to_hash
-        expect(hash).to match(
-          id: shop.id,
-          name: shop.name,
-          category_id: shop.category_id
-        )
-
-        hash = shop.to_hash(no_default: true)
-        expect(hash).to match(
-          id: shop.id,
-          name: shop.name,
-          created_at: shop.created_at,
-          updated_at: shop.updated_at,
-          category_id: shop.category_id
-        )
-
-        hash = area.to_hash
-        expect(hash).to match(
-          id: area.id,
-          name: area.name,
-          wide_area_id: area.wide_area_id
-        )
-
-        ApplicationRecord.active_record_to_hash_default_options = nil
-      end
+      expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+      expect(area.to_hash[:updated_at]).to eq area.updated_at
+      Shop.send(:clear_active_record_to_hash_converters)
     end
 
-    example 'Multiple `with` options in on record' do
-      hash = shop.to_hash(
-        only: :name,
-        with_areas: { only: :name },
-        with_category: { only: :name }
-      )
+    it 'should be able to convert the value of all Model in ApplicationRecord' do
+      ApplicationRecord.add_active_record_to_hash_converter do |key, value|
+        value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at && value.is_a?(Time)
+      end
+      expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+      expect(area.to_hash[:updated_at]).to eq area.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+      ApplicationRecord.send(:clear_active_record_to_hash_converters)
+    end
+  end
+
+  context 'Default options' do
+    it 'should be able to set default options for each Model' do
+      Shop.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
+
+      hash = shop.to_hash
       expect(hash).to match(
+        id: shop.id,
         name: shop.name,
-        areas: [
-          { name: shop.areas[0].name },
-          { name: shop.areas[1].name },
-          { name: shop.areas[2].name },
-        ],
-        category: { name: shop.category.name }
+        category_id: shop.category_id
       )
+
+      hash = shop.to_hash(no_default: true)
+      expect(hash).to match(
+        id: shop.id,
+        name: shop.name,
+        created_at: shop.created_at,
+        updated_at: shop.updated_at,
+        category_id: shop.category_id
+      )
+
+      hash = area.to_hash
+      expect(hash).to match(
+        id: area.id,
+        name: area.name,
+        created_at: area.created_at,
+        updated_at: area.updated_at,
+        wide_area_id: area.wide_area_id
+      )
+
+      Shop.active_record_to_hash_default_options = nil
     end
+
+    it 'should be able to set default options for all Model in ApplicationRecord' do
+      ApplicationRecord.active_record_to_hash_default_options = { except: %i[created_at updated_at] }
+
+      hash = shop.to_hash
+      expect(hash).to match(
+        id: shop.id,
+        name: shop.name,
+        category_id: shop.category_id
+      )
+
+      hash = shop.to_hash(no_default: true)
+      expect(hash).to match(
+        id: shop.id,
+        name: shop.name,
+        created_at: shop.created_at,
+        updated_at: shop.updated_at,
+        category_id: shop.category_id
+      )
+
+      hash = area.to_hash
+      expect(hash).to match(
+        id: area.id,
+        name: area.name,
+        wide_area_id: area.wide_area_id
+      )
+
+      ApplicationRecord.active_record_to_hash_default_options = nil
+    end
+  end
+
+  example 'Multiple `with` options in on record' do
+    hash = shop.to_hash(
+      only: :name,
+      with_areas: { only: :name },
+      with_category: { only: :name }
+    )
+    expect(hash).to match(
+      name: shop.name,
+      areas: [
+        { name: shop.areas[0].name },
+        { name: shop.areas[1].name },
+        { name: shop.areas[2].name },
+      ],
+      category: { name: shop.category.name }
+    )
   end
 end

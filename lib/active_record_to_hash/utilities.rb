@@ -27,13 +27,6 @@ module ActiveRecordToHash
   end
 
   def call_scope(relation, scope)
-    if scope.is_a? Hash
-      scope.each_key do |key|
-        relation = relation.public_send(key, *ActiveRecordToHash.to_a(scope[key]))
-      end
-      return relation
-    end
-
     if scope.is_a? Proc
       ret = relation.instance_exec(&scope)
       return ret || relation
