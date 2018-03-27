@@ -29,13 +29,14 @@ module ActiveRecordToHash
     [value]
   end
 
-  def retrieve_child_attribute(record, attr_name, options)
+  def retrieve_child_attribute(record, attr_name, args)
+    options = args.extract_options!
     value = record.public_send(attr_name)
     ActiveRecordToHash.to_a(options[:scope]).each do |scope|
       value = ActiveRecordToHash.call_scope(value, scope)
     end
-    return value.to_hash(options) if value.is_a? ::ActiveRecord::Base
-    return value.map {|rec| rec.to_hash(options) } if value.is_a? ::ActiveRecord::Relation
+    return value.to_hash(*args, options) if value.is_a? ::ActiveRecord::Base
+    return value.map {|rec| rec.to_hash(*args, options) } if value.is_a? ::ActiveRecord::Relation
     value
   end
 

@@ -175,8 +175,18 @@ describe 'to_hash' do
     end
   end
 
-  example 'attrs_reader' do
-    expect(shop.to_hash(attrs_reader: :to_api_hash)).to match(shop.to_api_hash)
+  context 'Attributes reader' do
+    example 'first argument' do
+      expect(shop.to_hash(:to_api_hash, with_category: true)).to match(
+        shop.to_api_hash.merge(category: shop.category.to_api_hash)
+      )
+    end
+
+    example 'attrs_reader option' do
+      expect(shop.to_hash(attrs_reader: :to_api_hash, with_category: true)).to match(
+        shop.to_api_hash.merge(category: shop.category.to_hash)
+      )
+    end
   end
 
   example 'Multiple `with` options in on record' do
