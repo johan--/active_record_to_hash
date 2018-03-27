@@ -21,8 +21,8 @@ module ActiveRecordToHash
     end
 
     def to_hash(options = {})
-
-      hash = attributes.each_with_object({}) do |(k, v), memo|
+      attrs_reader = options[:attrs_reader] || :attributes
+      hash = self.public_send(attrs_reader).each_with_object({}) do |(k, v), memo|
         key = k.to_sym
         next if ActiveRecordToHash.to_a(options[:except]).include?(key)
         next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)

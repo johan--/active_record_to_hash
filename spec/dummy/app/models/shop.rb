@@ -6,4 +6,11 @@ class Shop < ApplicationRecord
   def foobar
     "#{name} foobar"
   end
+
+  def to_api_hash
+    {
+      id: id,
+      name: "#front #{name}"
+    }
+  end
 end

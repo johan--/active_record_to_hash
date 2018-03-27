@@ -186,6 +186,10 @@ describe 'to_hash' do
     end
   end
 
+  example 'attrs_reader' do
+    expect(shop.to_hash(attrs_reader: :to_api_hash)).to match(shop.to_api_hash)
+  end
+
   example 'Multiple `with` options in on record' do
     hash = shop.to_hash(
       only: :name,
