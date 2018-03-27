@@ -22,7 +22,7 @@ module ActiveRecordToHash
 
     def to_hash(options = {})
       attrs_reader = options[:attrs_reader] || :attributes
-      hash = self.public_send(attrs_reader).each_with_object({}) do |(k, v), memo|
+      hash = public_send(attrs_reader).each_with_object({}) do |(k, v), memo|
         key = k.to_sym
         next if ActiveRecordToHash.to_a(options[:except]).include?(key)
         next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
