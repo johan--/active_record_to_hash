@@ -4,8 +4,6 @@
 
 Add `to_hash` method to ActiveRecord of Rails. The `to_hash` method can also acquire related records with relations by Hash, by passing the options to the argument.You can filter the values to retrieve, and change the keys of Hash using options.
 
-It is also possible to register converter methods in the model, and convert values.
-
 ActiveRecordToHash will be useful when creating a Web API that returns a response with JSON.
 
 ## Installation
@@ -144,27 +142,60 @@ p shop.to_hash(
 # }
 ```
 
-### Converter
+### Configuration
 
-You can register converters for each model. This function is useful for converting values that need to be converted at all times when outputting with JSON. If the function registered in the converters returns nil, the converter will be ignored.
+#### method_name
+
+You can change the method name from `:to_hash` to you want.
 
 ```rb
-class   ApplicationRecord < ActiveRecord::Base
-  add_active_record_to_hash_converter do |key, value|
-    value.strftime('%Y-%m-%d %H:%M:%S') if value.is_a? Time
-  end
+# config/application.rb
+module   YourApp
+ class   Application < Rails::Application
+   ...
+   config.active_record_to_hash.method_name = :to_your_hash
+ end
 end
 ```
 
+#### aliases
+
+You can set an aliases for the method.
+
 ```rb
-p shop.to_hash
-# {
-#   :id=>1,
-#   :name=>"Shop No1",
-#   :created_at=>"2018-03-26 08:21:32",
-#   :updated_at=>"2018-03-26 08:21:32"
-# }
+# config/application.rb
+module   YourApp
+ class   Application < Rails::Application
+   ...
+   config.active_record_to_hash.aliases = [:to_api_hash]
+ end
+end
 ```
+
+This is useful for overriding and preparing hashed methods of various patterns. The same alias method is also called for the related record specified in `with_[attribute_name]` option.
+
+```rb
+# app/model/application_record.rb
+
+  def to_api_hash(options = {})
+    options = {
+      except: [:created_at, :updated_at, :sequence],
+      attrs_reader: :attributes_for_api
+    }.merge(options)
+    
+    super(options)
+  end
+  
+  # Time type value is converted to timestamp.
+  def attributes_for_api
+    hash = attributes.each_with_object({}.with_indifferent_access) do |(k, v), obj|
+      v = v.to_i if v.is_a? Time
+      obj[k] = v
+    end
+    hash
+  end
+```
+
 
 
 ## Contributing
