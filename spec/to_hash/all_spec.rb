@@ -155,26 +155,6 @@ describe 'to_hash' do
     end
   end
 
-  context 'Converter' do
-    it 'should be able to convert the value of each Model' do
-      Shop.add_active_record_to_hash_converter do |key, value|
-        value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at
-      end
-      expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-      expect(area.to_hash[:updated_at]).to eq area.updated_at
-      Shop.send(:clear_active_record_to_hash_converters)
-    end
-
-    it 'should be able to convert the value of all Model in ApplicationRecord' do
-      ApplicationRecord.add_active_record_to_hash_converter do |key, value|
-        value.strftime('%Y-%m-%d %H:%M:%S') if key == :updated_at && value.is_a?(Time)
-      end
-      expect(shop.to_hash[:updated_at]).to eq shop.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-      expect(area.to_hash[:updated_at]).to eq area.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-      ApplicationRecord.send(:clear_active_record_to_hash_converters)
-    end
-  end
-
   example 'attrs_reader' do
     expect(shop.to_hash(attrs_reader: :to_api_hash)).to match(shop.to_api_hash)
   end

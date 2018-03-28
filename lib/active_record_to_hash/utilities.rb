@@ -1,19 +1,6 @@
 module ActiveRecordToHash
   module_function
 
-  def convert(model, key, value)
-    target_class = model
-    while target_class.respond_to? :active_record_to_hash_converters
-      target_class.active_record_to_hash_converters.each do |converter|
-        ret = converter.call(key, value)
-        value = ret unless ret.nil?
-      end
-      target_class = target_class.superclass
-    end
-
-    value
-  end
-
   def call_scope(relation, scope)
     if scope.is_a? Proc
       ret = relation.instance_exec(&scope)

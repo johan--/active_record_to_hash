@@ -2,24 +2,6 @@ module ActiveRecordToHash
   module ActiveRecord
     extend ActiveSupport::Concern
 
-    module ClassMethods
-      def active_record_to_hash_converters
-        @active_record_to_hash_converters || []
-      end
-
-      def add_active_record_to_hash_converter(&block)
-        @active_record_to_hash_converters ||= []
-        @active_record_to_hash_converters << block
-      end
-
-      private
-
-        # This is for the spec only. Don't call this.
-        def clear_active_record_to_hash_converters
-          @active_record_to_hash_converters = []
-        end
-    end
-
     included do
       define_method ::Rails.application.config.active_record_to_hash.method_name do |options = {}|
         attrs_reader = options[:attrs_reader] || :attributes
@@ -27,7 +9,7 @@ module ActiveRecordToHash
           key = k.to_sym
           next if ActiveRecordToHash.to_a(options[:except]).include?(key)
           next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)
-          memo[key] = ActiveRecordToHash.convert(self.class, key, v)
+          memo[key] = v
         end
   
         ActiveRecordToHash.handle_with_options(options) do |hash_key, attr_name, child_options|
