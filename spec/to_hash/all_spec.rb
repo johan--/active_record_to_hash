@@ -181,4 +181,9 @@ describe 'to_hash' do
 
     expect(shop_hash[:areas]).to match([1, 2, 3])
   end
+
+  example 'with args' do
+    shop_hash = shop.to_hash(with_foobars: { args: ['a', 3] })
+    expect(shop_hash[:foobars]).to match(['a', 'a', 'a'])
+  end
 end

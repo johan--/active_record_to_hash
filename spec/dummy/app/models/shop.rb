@@ -7,6 +7,12 @@ class Shop < ApplicationRecord
     "#{name} foobar"
   end
 
+  def foobars(char, count)
+    count.times.each_with_object([]) do |_num, arr|
+      arr << char
+    end
+  end
+
   def to_api_hash
     {
       id: id,

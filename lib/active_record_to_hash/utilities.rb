@@ -17,7 +17,8 @@ module ActiveRecordToHash
   end
 
   def retrieve_child_attribute(record, attr_name, options, callee)
-    value = record.public_send(attr_name)
+    args = options[:args]||[]
+    value = record.public_send(attr_name, *args)
     ActiveRecordToHash.to_a(options[:scope]).each do |scope|
       value = ActiveRecordToHash.call_scope(value, scope)
     end
