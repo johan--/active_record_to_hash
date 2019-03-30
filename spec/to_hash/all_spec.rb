@@ -175,4 +175,10 @@ describe 'to_hash' do
       category: { name: shop.category.name }
     )
   end
+
+  example 'pluck' do
+    shop_hash = shop.to_hash(with_areas: { pluck: :id })
+
+    expect(shop_hash[:areas]).to match([1, 2, 3])
+  end
 end

@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '>= 5.0', '< 5.3'
   s.add_development_dependency 'database_cleaner', '~> 1.6'
   s.add_development_dependency 'factory_bot_rails', '~> 4.8'
+  s.add_development_dependency 'faker'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'pry-doc'
   s.add_development_dependency 'pry-rails'
