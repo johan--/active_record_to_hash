@@ -8,7 +8,8 @@ module ActiveRecordToHash
           result = public_send(options[:pluck])
         else
           attrs_reader = options[:attrs_reader] || :attributes
-          result = public_send(attrs_reader).each_with_object({}) do |(k, v), memo|
+          attrs = attrs_reader.is_a?(Proc) ? attrs_reader.call(self) : public_send(attrs_reader)
+          result = attrs.each_with_object({}) do |(k, v), memo|
             key = k.to_sym
             next if ActiveRecordToHash.to_a(options[:except]).include?(key)
             next if options[:only] && !ActiveRecordToHash.to_a(options[:only]).include?(key)

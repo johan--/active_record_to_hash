@@ -159,6 +159,10 @@ describe 'to_hash' do
     expect(shop.to_hash(attrs_reader: :to_api_hash)).to match(shop.to_api_hash)
   end
 
+  example 'proc attrs_reader' do
+    expect(shop.to_hash(attrs_reader: ->(rec) { { foo: rec.id } })).to match(foo: shop.id)
+  end
+
   example 'Multiple `with` options in on record' do
     hash = shop.to_hash(
       only: :name,
@@ -184,6 +188,6 @@ describe 'to_hash' do
 
   example 'with args' do
     shop_hash = shop.to_hash(with_foobars: { args: ['a', 3] })
-    expect(shop_hash[:foobars]).to match(['a', 'a', 'a'])
+    expect(shop_hash[:foobars]).to match(%w[a a a])
   end
 end
