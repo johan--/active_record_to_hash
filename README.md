@@ -82,6 +82,11 @@ p shop.to_hash(attrs_reader: to_api_hash)
 #   :name=>"Shop No1",
 # }
 
+p shop.to_hash(attrs_reader: ->(shop){ {shop_id: shop.id} })
+# {
+#   :shop_id=>1,
+# }
+
 p shop.to_hash(only: :name)
 # {:name => "Shop No1"}
 
@@ -140,6 +145,20 @@ p shop.to_hash(
 #     {:id=>3, :name=>"Area No3", :wide_area=>{:id=>3, :name=>"Wide Area No3"}}
 #   ]
 # }
+
+
+p shop.to_hash(
+  only: [:id, :name],
+  with_areas: {
+    alter: ->(areas){ areas.each_with_object({}) {|area, memo| memo[area[:id]] = area[:name] } }
+  }
+)
+# {
+#   :id=>1,
+#   :name=>"Shop No1",
+#   :areas=>{1=>"Area No1", 2=>"Area No2", 3=>"Area No3"}
+# }
+
 ```
 
 ### Configuration
