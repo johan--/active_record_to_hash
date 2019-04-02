@@ -190,4 +190,24 @@ describe 'to_hash' do
     shop_hash = shop.to_hash(with_foobars: { args: ['a', 3] })
     expect(shop_hash[:foobars]).to match(%w[a a a])
   end
+
+  example 'alter' do
+    shop_hash = shop.to_hash(
+      with_areas: {
+        alter: lambda do |areas|
+          areas.each_with_object({}) do |area, memo|
+            memo[area[:id]] = area[:name]
+          end
+        end
+      },
+      alter: lambda do |shop|
+        { shop_id: shop[:id] }
+      end
+    )
+
+    expect(shop_hash).to match(
+      shop_id: shop.id,
+      areas: shop.areas.each_with_object({}) {|area, memo| memo[area.id] = area.name }
+    )
+  end
 end

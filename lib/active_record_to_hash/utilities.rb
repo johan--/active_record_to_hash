@@ -23,17 +23,26 @@ module ActiveRecordToHash
     ActiveRecordToHash.to_a(options[:scope]).each do |scope|
       value = ActiveRecordToHash.call_scope(value, scope)
     end
-    return value.public_send(callee, options) if value.is_a? ::ActiveRecord::Base
+    return value.public_send(callee, options.except(:alter)) if value.is_a? ::ActiveRecord::Base
 
     if value.respond_to?(:map)
       return value.map do |obj|
-        next obj.public_send(callee, options) if obj.is_a? ::ActiveRecord::Base
+        next obj.public_send(callee, options.except(:alter)) if obj.is_a? ::ActiveRecord::Base
 
         obj
       end
     end
 
     value
+  end
+
+  def handle_alter(result, options)
+    return result if options[:alter].nil?
+
+    res = options[:alter].call(result)
+    return result if res.nil?
+
+    res
   end
 
   def handle_with_options(options)

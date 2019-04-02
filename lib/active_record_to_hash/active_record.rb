@@ -16,10 +16,12 @@ module ActiveRecordToHash
 
             memo[key] = v
           end
+          result = ActiveRecordToHash.handle_alter(result, options)
         end
 
         ActiveRecordToHash.handle_with_options(options) do |hash_key, attr_name, child_options|
-          result[hash_key] = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, child_options, __callee__)
+          child = ActiveRecordToHash.retrieve_child_attribute(self, attr_name, child_options, __callee__)
+          result[hash_key] = ActiveRecordToHash.handle_alter(child, child_options)
         end
 
         result
