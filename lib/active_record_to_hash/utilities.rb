@@ -25,7 +25,7 @@ module ActiveRecordToHash
     end
     return value.public_send(callee, options.except(:alter)) if value.is_a? ::ActiveRecord::Base
 
-    if value.respond_to?(:map)
+    if value.is_a?(Array) || value.is_a?(::ActiveRecord::Relation)
       return value.map do |obj|
         next obj.public_send(callee, options.except(:alter)) if obj.is_a? ::ActiveRecord::Base
 
