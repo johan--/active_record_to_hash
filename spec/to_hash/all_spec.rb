@@ -210,4 +210,12 @@ describe 'to_hash' do
       areas: shop.areas.each_with_object({}) {|area, memo| memo[area.id] = area.name }
     )
   end
+
+  example 'exists' do
+    shop_hash = shop.to_hash(with_areas: :exists)
+    expect(shop_hash[:areas]).to be true
+
+    shop_hash = FactoryBot.create(:shop, with_out_areas: true).to_hash(with_areas: :exists)
+    expect(shop_hash[:areas]).to be false
+  end
 end

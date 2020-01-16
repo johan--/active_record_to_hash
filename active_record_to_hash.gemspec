@@ -25,5 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry-rails'
   s.add_development_dependency 'pry-stack_explorer'
   s.add_development_dependency 'rspec-rails', '~> 3.7'
+  s.add_development_dependency 'rubocop', '~> 0.67.2'
+  s.add_development_dependency 'rubocop-performance', '~> 1.0.0'
   s.add_development_dependency 'sqlite3', '~> 1.3'
 end
