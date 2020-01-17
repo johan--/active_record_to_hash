@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_record_to_hash (0.3.0)
+    active_record_to_hash (0.3.1)
       rails (>= 5.0, <= 6.0)
 
 GEM

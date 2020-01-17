@@ -23,7 +23,7 @@ gem 'active_record_to_hash', '~>0.1'
 | key | Change the key of the hash. | Symbol |
 | except | Remove from the hash. | Symbol Array |
 | only | Retrieve only the specified key. | Symbol Array |
-| with_[attribute_name] | The attribute name is passed to public_send. If the return value is ActiveRecord or ActiveRecord_Relation, call `to_hash`. The Hash specified for this value is passed to that `to_hash`. | Boolean Hash |
+| with_[attribute_name] | The attribute name is passed to public_send. If the return value is ActiveRecord or ActiveRecord_Relation, call `to_hash`. The Hash specified for this value is passed to that `to_hash`. | Boolean Hash :exists |
 | scope | You can specify scope when acquiring related records. | Symbol Array Proc |
 
 
@@ -158,6 +158,10 @@ p shop.to_hash(
 #   :name=>"Shop No1",
 #   :areas=>{1=>"Area No1", 2=>"Area No2", 3=>"Area No3"}
 # }
+
+p shop.to_hash(only: [:id, :name], with_areas: :exists)
+# {:id=>1, :name=>"Shop No1", :areas=>true}
+# You can use this option only with ActiveRecord::Relation
 
 ```
 

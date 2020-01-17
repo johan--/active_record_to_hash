@@ -217,5 +217,8 @@ describe 'to_hash' do
 
     shop_hash = FactoryBot.create(:shop, with_out_areas: true).to_hash(with_areas: :exists)
     expect(shop_hash[:areas]).to be false
+
+    binding.pry
+  
   end
 end

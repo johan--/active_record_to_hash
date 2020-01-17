@@ -20,8 +20,11 @@ module ActiveRecordToHash
   def retrieve_child_attribute(record, attr_name, options, callee)
     args = options[:args] || []
     value = record.public_send(attr_name, *args)
-    return value.exists? if options[:exists]
-
+    if options[:exists]
+      raise 'You can use `exists` option only with ActiveRecord::Relation' unless value.is_a? ::ActiveRecord::Relation
+      return value.exists?
+    end
+    
     ActiveRecordToHash.to_a(options[:scope]).each do |scope|
       value = ActiveRecordToHash.call_scope(value, scope)
     end
