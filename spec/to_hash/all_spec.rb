@@ -217,8 +217,15 @@ describe 'to_hash' do
 
     shop_hash = FactoryBot.create(:shop, with_out_areas: true).to_hash(with_areas: :exists)
     expect(shop_hash[:areas]).to be false
+  end
 
-    binding.pry
-  
+  example 'value' do
+    shop_hash = shop.to_hash(with_hogehoge: { value: 'pahupahu' })
+    expect(shop_hash[:hogehoge]).to eq 'pahupahu'
+  end
+
+  example 'value with key' do
+    shop_hash = shop.to_hash(with_hogehoge: { value: 'pahupahu', key: :dahhunda })
+    expect(shop_hash[:dahhunda]).to eq 'pahupahu'
   end
 end
