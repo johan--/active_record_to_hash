@@ -228,4 +228,9 @@ describe 'to_hash' do
     shop_hash = shop.to_hash(with_hogehoge: { value: 'pahupahu', key: :dahhunda })
     expect(shop_hash[:dahhunda]).to eq 'pahupahu'
   end
+
+  example 'false' do
+    hash = shop.to_hash(with_areas: false)
+    expect(hash.key?(:areas)).to be false
+  end
 end

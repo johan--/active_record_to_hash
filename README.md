@@ -107,6 +107,12 @@ p shop.to_hash(only: [:id, :name], with_areas: true)
 #  ]
 # }
 
+p shop.to_hash(only: [:id, :name], with_areas: false)
+# {
+#  :id=>1,
+#  :name=>"Shop No1"
+# }
+
 p shop.to_hash(only: [:id, :name], with_areas: {key: :area_list})
 # {
 #  :id=>1,

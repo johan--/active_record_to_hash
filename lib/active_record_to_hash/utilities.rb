@@ -55,6 +55,7 @@ module ActiveRecordToHash
   def handle_with_options(options)
     options.each_key do |key|
       next unless key.to_s.start_with?('with_')
+      next if options[key] == false
 
       attr_name = key[5..-1].to_sym # 5 is 'with_'.length
       hash_key = !options[key].is_a?(Hash) || options[key][:key].nil? ? attr_name : options[key][:key]
