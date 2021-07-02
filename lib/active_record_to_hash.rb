@@ -9,9 +9,6 @@ module ActiveRecordToHash
       require 'active_record_to_hash/utilities'
       require 'active_record_to_hash/active_record'
       ::ActiveRecord::Base.send(:include, ::ActiveRecordToHash::ActiveRecord)
-      ::Rails.application.config.active_record_to_hash.aliases.each do |alias_name|
-        ::ActiveRecord::Base.send(:alias_method, alias_name, ::Rails.application.config.active_record_to_hash.method_name)
-      end
     end
   end
 end

@@ -26,6 +26,10 @@ module ActiveRecordToHash
 
         result
       end
+
+      ::Rails.application.config.active_record_to_hash.aliases.each do |alias_name|
+        send(:alias_method, alias_name, ::Rails.application.config.active_record_to_hash.method_name)
+      end
     end
   end
 end
