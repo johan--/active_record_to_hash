@@ -225,7 +225,19 @@ This is useful for overriding and preparing hashed methods of various patterns. 
   end
 ```
 
+### Use without ActiveRecord
 
+If you want to use without ActiveRecord, just include `ActiveRecordToHash::ActiveRecord`
+
+```ruby
+class ShopData
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveRecordToHash::ActiveRecord
+
+  ...
+end
+```
 
 ## Contributing
 
