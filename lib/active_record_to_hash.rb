@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ActiveRecordToHash
   class Railtie < ::Rails::Railtie
     config.active_record_to_hash = ActiveSupport::OrderedOptions.new

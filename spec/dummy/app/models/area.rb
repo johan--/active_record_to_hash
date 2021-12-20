@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Area < ApplicationRecord
   belongs_to :wide_area
   has_many :shop_areas
