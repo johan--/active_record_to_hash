@@ -1,6 +1,7 @@
-require: rubocop-performance
+require: rubocop-rails
 
 AllCops:
+  TargetRubyVersion: 2.6
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
@@ -25,9 +26,9 @@ Style/ConditionalAssignment:
 
 
 Layout/IndentationConsistency:
-  EnforcedStyle: rails
+  EnforcedStyle: indented_internal_methods
 
-Layout/IndentHash:
+Layout/IndentFirstHashElement:
   EnforcedStyle: 'consistent'
 
 Layout/AlignParameters:
@@ -39,7 +40,7 @@ Layout/SpaceInsideBlockBraces:
 Style/BracesAroundHashParameters:
   EnforcedStyle: context_dependent
 
-Layout/FirstParameterIndentation:
+Layout/IndentFirstArgument:
   EnforcedStyle: consistent
 
 

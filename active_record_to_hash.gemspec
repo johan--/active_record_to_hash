@@ -5,6 +5,7 @@ require 'active_record_to_hash/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
+  s.required_ruby_version = '>= 2.6.0'
   s.name        = 'active_record_to_hash'
   s.version     = ActiveRecordToHash::VERSION
   s.authors     = ['Masamoto Miyata']
@@ -26,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry-stack_explorer'
   s.add_development_dependency 'rspec', '=3.10'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'rubocop', '~> 0.67.2'
-  s.add_development_dependency 'rubocop-performance', '~> 1.0.0'
+  s.add_development_dependency 'rubocop', '=0.75.0'
+  s.add_development_dependency 'rubocop-rails'
   s.add_development_dependency 'sqlite3', '~> 1.3'
 end
