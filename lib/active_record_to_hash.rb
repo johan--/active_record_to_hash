@@ -10,7 +10,7 @@ module ActiveRecordToHash
       require 'active_record_to_hash/version'
       require 'active_record_to_hash/utilities'
       require 'active_record_to_hash/active_record'
-      ::ActiveRecord::Base.send(:include, ::ActiveRecordToHash::ActiveRecord)
+      ::ActiveRecord::Base.include ::ActiveRecordToHash::ActiveRecord
     end
   end
 end
